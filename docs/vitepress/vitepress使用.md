@@ -1,0 +1,523 @@
+# vitepress使用
+
+## 安装
+
+### 前置准备
+
+`Node.js 18 及以上版本`
+
+#### 1.安装软件包
+
+```shell
+    npm add -D vitepress@next
+```
+
+#### 2.安装向导
+
+> VitePress 附带一个命令行设置向导，可以帮助你构建一个基本项目
+
+```shell
+    npx vitepress init
+```
+
+> VitePress 项目的初始化配置过程
+
+```shell
+Welcome to VitePress!
+
+Where should VitePress initialize the config?          #设置 VitePress 配置文件存放的目录
+./docs                                                 #选择 ./docs 表示在项目根目录下的 docs 文件夹中初始化 VitePress
+
+Where should VitePress look for your markdown files?   #指定 Markdown 文档的存放路径
+./docs                                                 #VitePress 会在这个目录中查找 .md 文件并转换为网页
+
+Site title:                                            #设置网站的名称
+677                                                    #这个标题会显示在浏览器标签页 导航栏等位置
+
+Site description:                                      #设置网站的简短描述
+677知识体系                                             #用于 SEO 和搜索引擎结果中显示的描述信息
+
+Theme:                                                 #选择 VitePress 的主题
+Default Theme                                          #默认主题提供了基础的样式和布局 也支持自定义主题
+
+Use TypeScript for config and theme files?             #是否在配置和主题文件中使用 TypeScript
+Yes                                                    #选择 "Yes" 会生成 .ts 配置文件 提供更好的类型提示
+
+Add VitePress npm scripts to package.json?             #是否在 package.json 中添加 VitePress 相关命令
+Yes                                                    #方便通过 npm/pnpm/yarn 命令运行 VitePress
+
+Add a prefix for VitePress npm scripts?                #是否为 VitePress 命令添加前缀
+Yes                                                    #避免与项目中的其他脚本命令冲突
+
+Prefix for VitePress npm scripts:                      #设置具体的前缀名称
+docs                                                   #选择 docs 后 命令会变成 docs:dev docs:build 等
+
+Done! Now run pnpm run docs:dev and start writing.
+```
+
+## 文件结构
+
+如果正在构建一个独立的 VitePress 站点，可以在当前目录 (./) 中搭建站点。但是，如果在现有项目中与其他源代码一起安装 VitePress，建议将站点搭建在嵌套目录 (例如 ./docs) 中，以便它与项目的其余部分分开。
+
+假设选择在 ./docs 中搭建 VitePress 项目，生成的文件结构应该是这样的：
+
+```text
+.
+├─ docs                         #`docs` 目录作为 VitePress 站点的项目根目录。
+│ ├─ .vitepress                 #`.vitepress` 目录是 VitePress 配置文件、开发服务器缓存、构建输出和可选主题自定义代码的位置。
+│ │ └─ config.js                # VitePress 配置文件
+│ ├─ api-examples.md            # 示例页面
+│ ├─ markdown-examples.md       # markdown 示例页面
+│ └─ index.md                   # 首页文档
+└─ package.json                 # 包含新的 npm scripts
+```
+
+#### 源文件
+
+- > `.vitepress` 目录之外的 `Markdown` 文件被视为源文件。
+- > `VitePress` 使用 基于文件的路由：每个 `.md` 文件将在相同的路径被编译成为 .html 文件。
+- > 例如，index.md 将会被编译成 `index.html`，可以在生成的 `VitePress` 站点的根路径 `/` 进行访问。
+- > `VitePress` 还提供了生成简洁 `URL`、重写路径和动态生成页面的能力。这些将在路由指南中进行介绍。
+
+## 启动并运行
+
+该工具还应该将以下 npm 脚本注入到 package.json 中：
+
+```json title="package.json"
+{
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  }
+}
+```
+
+`docs:dev` 脚本将启动具有即时热更新的本地开发服务器。使用以下命令运行它：
+
+```shell
+npm run docs:dev
+```
+
+除了 npm 脚本，还可以直接调用 VitePress：
+
+```shell
+npx vitepress dev docs
+``` 
+
+## 部署
+
+### 构建文档
+
+```shell
+npm run docs:build
+``` 
+
+### 本地预览
+
+> preview 命令将启动一个本地静态 Web 服务 端口默认为 4173 ，该服务以 .vitepress/dist 作为源文件。这是检查生产版本在本地环境中是否正常的一种简单方法。
+
+```shell
+npm run docs:preview
+``` 
+
+> 可以通过传递 --port 作为参数来配置服务器的端口
+
+```json title="package.json"
+{
+  "scripts": {
+    "docs:preview": "vitepress preview docs --port 8080"
+  }
+}
+```
+
+### 命令行接口详细说明
+
+#### `vitepress dev`
+
+使用指定目录作为根目录来启动 `VitePress` 开发服务器。默认为当前目录。在当前目录下运行时也可以省略 `dev` 命令。
+
+用法
+
+```shell
+# 从当前目录启动，省略 `dev`
+vitepress
+
+# 从子目录启动
+vitepress dev [root]
+```
+
+选项
+
+| 选项            | 说明                                      |
+|---------------|-----------------------------------------|
+| `open [path]` | 启动时打开浏览器 (`boolean`\|`string`)          |
+| `port <port>` | 指定端口 (`number`)                         |
+| `base <path>` | `public base URL` (默认值: `/`) (`string`) |
+| `cors`        | 启用 `CORS`                               |
+| `strictPort`  | 如果指定的端口已被占用则退出 (`boolean`)              |
+| `force`       | 强制优化程序忽略缓存并重新绑定 (`boolean`)             |
+
+### `vitepress build`
+
+构建用于生产环境的 VitePress 站点。
+
+用法
+
+```shell
+vitepress build [root]
+```
+
+选项
+
+| 选项                           | 说明                                                |
+|------------------------------|---------------------------------------------------|
+| `mpa (experimental)`         | `MPA` 模式下构建，无需客户端激活 (`boolean`)                   |
+| `base <path>`                | `public base URL` (默认值: `/`) (`string`)           |
+| `target <target>`            | 转译目标 (默认值：`"modules"`) (`string`)                 |
+| `outDir <dir>`               | 输出目录 (默认值：`.vitepress/dist`) (`string`)           |
+| `assetsInlineLimit <number>` | 静态资源 `base64` 内联阈值（以字节为单位）(默认值：`4096`) (`number`) |
+
+### `vitepress preview`
+
+在本地预览生产版本。
+
+用法
+
+```shell
+vitepress preview [root]
+```
+
+选项
+
+| 选项            | 说明                                      |
+|---------------|-----------------------------------------|
+| `base <path>` | `public base URL` (默认值: `/`) (`string`) |
+| `port <port>` | 指定端口 (`number`)                         |
+
+### `vitepress init`
+
+在当前目录中启动安装向导。
+
+用法
+
+```shell
+vitepress init
+```
+
+### 设定 public 根目录
+
+> 默认情况下，我们假设站点将部署在域名 (/) 的根路径上。如果站点在子路径中提供服务，例如 /blog/，则需要在 VitePress 配置中将 base 选项设置为 '/blog/'。
+> 例：如果你使用的是 Github（或 GitLab）页面并部署到 user.github.io/repo/，请将 base 设置为 /repo/。
+
+### HTTP 缓存标头
+
+> 可以配置 cache-control 标头以在重复访问时获得更好的性能。
+> 生产版本对静态资源 (JavaScript、CSS 和其他非 public 目录中的导入资源) 使用哈希文件名
+> 所有此类文件都将放置在输出目录的 assets/ 中，因此你可以为它们配置以下标头
+
+```text
+    Cache-Control: max-age=31536000,immutable
+```
+
+### GitHub Pages 部署
+
+1. 在项目的 .github/workflows 目录中创建一个名为 deploy.yml 的文件，其中包含这样的内容：
+    ```yaml title=".github/workflows/deploy.yml"
+    # 构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
+    #
+    name: Deploy VitePress site to Pages
+    
+    on:
+        # 在针对 `main` 分支的推送上运行。如果你
+        # 使用 `master` 分支作为默认分支，请将其更改为 `master`
+        push:
+            branches: [ main ]
+    
+        # 允许你从 Actions 选项卡手动运行此工作流程
+        workflow_dispatch:
+    
+    # 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages
+    permissions:
+        contents: read
+        pages: write
+        id-token: write
+    
+    # 只允许同时进行一次部署，跳过正在运行和最新队列之间的运行队列
+    # 但是，不要取消正在进行的运行，因为我们希望允许这些生产部署完成
+    concurrency:
+        group: pages
+        cancel-in-progress: false
+    
+    jobs:
+        # 构建工作
+        build:
+            runs-on: ubuntu-latest
+            steps:
+                -   name: Checkout
+                    uses: actions/checkout@v5
+                    with:
+                        fetch-depth: 0 # 如果未启用 lastUpdated，则不需要
+                # - uses: pnpm/action-setup@v4 # 如果使用 pnpm，请取消此区域注释
+                #   with:
+                #     version: 9
+                # - uses: oven-sh/setup-bun@v1 # 如果使用 Bun，请取消注释
+                -   name: Setup Node
+                    uses: actions/setup-node@v6
+                    with:
+                        node-version: 24
+                        cache: npm # 或 pnpm / yarn
+                -   name: Setup Pages
+                    uses: actions/configure-pages@v4
+                -   name: Install dependencies
+                    run: npm ci # 或 pnpm install / yarn install / bun install
+                -   name: Build with VitePress
+                    run: npm run docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
+                -   name: Upload artifact
+                    uses: actions/upload-pages-artifact@v3
+                    with:
+                        path: docs/.vitepress/dist
+    
+        # 部署工作
+        deploy:
+            environment:
+                name: github-pages
+                url: ${{ steps.deployment.outputs.page_url }}
+            needs: build
+            runs-on: ubuntu-latest
+            name: Deploy
+            steps:
+                -   name: Deploy to GitHub Pages
+                    id: deployment
+                    uses: actions/deploy-pages@v4
+    ```
+2. 在存储库设置中的 `Pages` 菜单项下，选择 `Build and deployment` > `Source` > `GitHub Actions`。
+3. 将更改推送到 `main` 分支并等待 `GitHub Action` 工作流完成。
+4. 你应该看到站点部署到 `https://<username>.github.io/[repository]/` 或 `https://<custom-domain>/`，这取决于你的设置。你的站点将在每次推送到 `main` 分支时自动部署。
+
+### GitLab Pages 部署
+
+1. 如果你想部署到 `https://<username> .gitlab.io/<repository> /`，将 `VitePress` 配置中的 `outDir` 设置为 `../public`。将 base 选项配置为 `/<repository>/`。
+2. 在项目的根目录中创建一个名为 `.gitlab-ci.yml` 的文件，其中包含以下内容。每当你更改内容时，这都会构建和部署你的站点：
+
+```yaml title=".gitlab-ci.yml"
+image: node:18
+pages:
+    cache:
+        paths:
+            - node_modules/
+    script:
+        # - apk add git # 如果你使用的是像 alpine 这样的小型 docker 镜像，并且启用了 lastUpdated，请取消注释
+        - npm install
+        - npm run docs:build
+    artifacts:
+        paths:
+            - public
+    only:
+        - main
+```
+
+### Nginx 部署
+
+1. 此配置包括对基于文本的常见资源的 gzip 压缩、使用适当缓存头为 VitePress 站点静态文件提供服务的规则以及处理 cleanUrls: true 的方法。
+2. 本配置默认已构建的 VitePress 站点位于服务器上的 /app 目录中。
+
+```nginx
+server {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+    listen 80;
+    server_name _;
+    index index.html;
+
+    location / {
+        # 内容位置
+        root /app;
+
+        # 完全匹配 -> 反向清理 url -> 文件夹 -> 没有发现    
+        try_files $uri $uri.html $uri/ =404;
+
+        # 不存在的页面
+        error_page 404 /404.html;
+
+        # 在此设置中，如果文件夹没有 index.html，就会引发 403 错误
+        error_page 403 /404.html;
+
+        # 调整缓存标头
+        # assets 文件夹中的文件都有哈希文件名
+        location ~* ^/assets/ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+}
+```
+
+## 运行时`API`
+
+`VitePress` 提供了几个内置的 `API` 来让你访问应用程序数据。`VitePress` 还附带了一些可以在全局范围内使用的内置组件。<br>
+辅助函数可从 `vitepress` 全局导入，通常用于自定义主题 `Vue` 组件。但是，它们也可以在 `.md` 页面内使用，因为 `markdown` 文件被编译成 `Vue` 单文件组件。<br>
+以 `use*` 开头的方法表示它是一个 `Vue 3` 组合式 `API` 函数，只能在 `setup()` 或 `<script setup>` 中使用。<br>
+
+### `useData`
+
+返回特定页面的数据。返回的对象具有以下类型：
+
+```typescript
+interface VitePressData<T = any> {
+    /**
+     * 站点级元数据
+     */
+    site: Ref<SiteData<T>>
+    /**
+     * .vitepress/config.js 中的 themeConfig
+     */
+    theme: Ref<T>
+    /**
+     * 页面级元数据
+     */
+    page: Ref<PageData>
+    /**
+     * 页面 frontmatter
+     */
+    frontmatter: Ref<PageData['frontmatter']>
+    /**
+     * 动态路由参数
+     */
+    params: Ref<PageData['params']>
+    title: Ref<string>
+    description: Ref<string>
+    lang: Ref<string>
+    isDark: Ref<boolean>
+    dir: Ref<string>
+    localeIndex: Ref<string>
+}
+
+interface PageData {
+    title: string
+    titleTemplate?: string | boolean
+    description: string
+    relativePath: string
+    filePath: string
+    headers: Header[]
+    frontmatter: Record<string, any>
+    params?: Record<string, any>
+    isNotFound?: boolean
+    lastUpdated?: number
+}
+```
+
+示例：
+
+```vue
+
+<script setup>
+  import {useData} from 'vitepress'
+
+  const {theme} = useData()
+</script>
+
+<template>
+  <h1>{{ theme.footer.copyright }}</h1>
+</template>
+```
+
+### `useRoute`
+
+返回具有以下类型的当前路由对象：
+
+```typescript
+interface Route {
+    path: string
+    data: PageData
+    component: Component | null
+}
+```
+
+### `useRouter`
+
+返回 VitePress 路由实例，以便可以以编程方式导航到另一个页面。
+
+```typescript
+interface Router {
+    /**
+     * 当前路由
+     */
+    route: Route
+    /**
+     * 导航到新的 URL
+     */
+    go: (to?: string) => Promise<void>
+    /**
+     * 在路由更改前调用。返回 `false` 表示取消导航
+     */
+    onBeforeRouteChange?: (to: string) => Awaitable<void | boolean>
+    /**
+     * 在页面组件加载前（history 状态更新后）调用。返回 `false` 表示取消导航
+     */
+    onBeforePageLoad?: (to: string) => Awaitable<void | boolean>
+    /**
+     * 在页面组件加载后（页面组件实际更新前）调用
+     */
+    onAfterPageLoad?: (to: string) => Awaitable<void>
+    /**
+     * 在路由更改后调用
+     */
+    onAfterRouteChange?: (to: string) => Awaitable<void>
+}
+```
+
+### `withBase`
+
+`Type: (path: string) => string`
+
+将配置的 `base` 追加到给定的 `URL` 路径。
+
+### `<Content />`
+
+`<Content />` 组件显示渲染的 `markdown` 内容。在创建自己的主题时很有用。
+
+```vue
+
+<template>
+  <h1>Custom Layout!</h1>
+  <Content/>
+</template>
+```
+
+### `<ClientOnly />`
+
+`<ClientOnly />` 组件仅在客户端渲染其插槽。<br>
+由于 `VitePress` 应用程序在生成静态构建时是在 `Node.js` 中服务器渲染的，因此任何 `Vue` 使用都必须符合通用代码要求。<br>
+简而言之，确保仅在 `beforeMount` 或 `mounted` 钩子中访问 `Browser/DOM API`。<br>
+如果正在使用或演示对 `SSR` 不友好的组件 (例如，包含自定义指令)，可以将它们包装在 `ClientOnly` 组件中。<br>
+相关文档：[SSR 兼容性](https://vitepress.dev/zh/guide/ssr-compat)
+
+```vue
+
+<ClientOnly>
+  <NonSSRFriendlyComponent/>
+</ClientOnly>
+```
+
+### `$frontmatter`
+
+在 Vue 表达式中直接访问当前页面的 `frontmatter` 数据。
+
+```md
+---
+title: Hello
+---
+
+# {{ $frontmatter.title }}
+```
+
+### `$params`
+
+在 Vue 表达式中直接访问当前页面的动态路由参数。
+
+```md
+- package name: {{ $params.pkg }}
+- version: {{ $params.version }}
+```
