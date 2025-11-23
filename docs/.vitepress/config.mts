@@ -1,4 +1,5 @@
 import {defineConfig} from 'vitepress'
+import {set_sidebar} from "./theme/auto-gen-sidebar.mjs";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,7 +14,7 @@ export default defineConfig({
     description: "677 知识体系",
     // 设置要在页面 HTML 的 <head> 标签中呈现的其他元素,用户添加的标签在结束 head 标签之前呈现，在 VitePress 标签之后。
     // 当前添加了 ico 显示
-    head: [['link', {rel: 'icon', href: '../cat1.ico'}]],
+    head: [['link', {rel: 'icon', href: './cat1.ico'}]],
     // 站点的 lang 属性。这将呈现为页面 HTML 中的 <html lang="en-US"> 标签。
     lang: 'en-US',
     // 默认值： /,计划在子路径部署就需要改这个为子路径目录,始终以 / 开头和结尾
@@ -63,7 +64,7 @@ export default defineConfig({
          * 导航栏上显示的 Logo，位于站点标题前。
          * 可以接受一个路径字符串，或者一个对象来设置在浅色/深色模式下不同的 Logo。
          */
-        logo: {light: "../cat1.ico", dark: "../cat2.ico"},
+        logo: {light: "./cat1.ico", dark: "./cat2.ico"},
         /**
          * 可以自定义此项以替换导航中的默认站点标题 (应用配置中的 title)。
          * 当设置为 false 时，导航中的标题将被禁用。这在当 logo 已经包含站点标题文本时很有用。
@@ -108,6 +109,7 @@ export default defineConfig({
          * 单侧边栏：如果展示所有的侧边栏。则传数组。
          * 多侧边栏：根据页面路径显示不同的侧边栏，传递一个对象，key是对应的页面目录,当用户位于对应的页面目录时，才显示此侧边栏
          */
+        // sidebar: {"/": set_sidebar("docs/")},
         sidebar: {
             '/vitepress/': [
                 {
@@ -216,7 +218,23 @@ export default defineConfig({
          * 得益于 minisearch，VitePress 支持使用浏览器内索引进行模糊全文搜索
          */
         search: {
-            provider: 'local'
+            provider: "local",
+            options: {
+                translations: {
+                    button: {
+                        buttonText: "搜索文档",
+                        buttonAriaLabel: "搜索文档",
+                    },
+                    modal: {
+                        noResultsText: "无法找到相关结果",
+                        resetButtonTitle: "清除查询条件",
+                        footer: {
+                            selectText: "选择",
+                            navigateText: "切换",
+                        },
+                    },
+                },
+            },
         },
 
         /**
