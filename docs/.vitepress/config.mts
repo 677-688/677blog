@@ -1,20 +1,25 @@
 import {defineConfig} from 'vitepress'
-import {set_sidebar} from "./theme/auto-gen-sidebar.mjs";
+import Sidebar from "vitepress-plugin-sidebar-resolve";
+import timeline from "vitepress-markdown-timeline";
+import {MermaidMarkdown, MermaidPlugin} from 'vitepress-plugin-mermaid';
+
+import {nav} from './configs'
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+// VitePress's options here...
+const vitePressOptions = {
     /**
      *  以下为站点元数据
      */
     // 站点的标题，默认值： VitePress，每个页面可以通过 frontmatter 覆盖
-    title: "677 知识体系",
+    title: " 677 的知识库",
     // 站点的标题模板，允许自定义每个页面的标题后缀或整个标题,设置为 false 以禁用标题后缀,设置其他字符串则替换标题后缀，每个页面可以通过 frontmatter 覆盖
     titleTemplate: false,
     // 站点的描述，这将呈现为页面 HTML 中的 <meta> 标签,每个页面可以通过 frontmatter 覆盖
-    description: "677 知识体系",
+    description: " 677 的知识库",
     // 设置要在页面 HTML 的 <head> 标签中呈现的其他元素,用户添加的标签在结束 head 标签之前呈现，在 VitePress 标签之后。
     // 当前添加了 ico 显示
-    head: [['link', {rel: 'icon', href: './cat1.ico'}]],
+    head: [['link', {rel: 'icon', href: './icon/cat1.ico'}]],
     // 站点的 lang 属性。这将呈现为页面 HTML 中的 <html lang="en-US"> 标签。
     lang: 'en-US',
     // 默认值： /,计划在子路径部署就需要改这个为子路径目录,始终以 / 开头和结尾
@@ -24,9 +29,12 @@ export default defineConfig({
      * 路由
      */
     // 是否生成简洁的URL 当设置为 true 时，VitePress 将从 URL 中删除 .html 后缀。
-    cleanUrls: false,
+    cleanUrls: true,
     // 重定向 类型：Record<string, string> ，自定义目录 <-> URL 映射，详细信息请参阅[路由：路由重写](https://vitepress.dev/zh/guide/routing#route-rewrites)。
-    // rewrites:"",
+    rewrites: {
+        // '677blog/**:page': '**/:page'
+        // '^/677blog/(.*)$': '/$1'
+    },
     /**
      * 构建
      */
@@ -64,38 +72,16 @@ export default defineConfig({
          * 导航栏上显示的 Logo，位于站点标题前。
          * 可以接受一个路径字符串，或者一个对象来设置在浅色/深色模式下不同的 Logo。
          */
-        logo: {light: "./cat1.ico", dark: "./cat2.ico"},
+        logo: {light: "./icon/cat1.ico", dark: "./icon/cat2.ico"},
         /**
          * 可以自定义此项以替换导航中的默认站点标题 (应用配置中的 title)。
          * 当设置为 false 时，导航中的标题将被禁用。这在当 logo 已经包含站点标题文本时很有用。
          */
         siteTitle: false,
-        /**
-         * 导航菜单项的配置,Nav 是显示在页面顶部的导航栏。它包含站点标题、全局菜单链接等。
-         * text 是 nav 中显示的实际文本，
-         * link 是单击文本时将导航到的链接,link 也可以是一个函数，它接受 PageData 作为参数并返回路径
-         * items 数组，设置导航链接也可以是下拉菜单,link 和 items 只能配置一个
-         * activeMatch 当前页面位于匹配路径下时，导航菜单项将突出显示
-         */
-        nav: [
-            {text: '首页', link: '/'},
-            {
-                text: 'vitepress',
-                activeMatch: "/vitepress/",
-                items: [
-                    {text: 'vitepress使用', link: '/vitepress/vitepress使用'},
-                    {text: 'markdown语法扩展', link: '/vitepress/markdown语法扩展'},
-                    {text: 'frontmatter说明', link: '/vitepress/frontmatter说明'}
-                ]
-            },
-            {
-                text: 'markdown',
-                activeMatch: "/markdown/",
-                items: [
-                    {text: 'markdown语法', link: '/markdown/markdown语法'},
-                ]
-            },
-        ],
+
+        // 配置迁移到 docs/.vitepress/theme/configs/nav.ts
+        nav,
+
         /**
          * 侧边栏菜单项的配置：侧边栏是文档的主要导航块。
          * text：侧边栏项的文本标签
@@ -110,31 +96,33 @@ export default defineConfig({
          * 多侧边栏：根据页面路径显示不同的侧边栏，传递一个对象，key是对应的页面目录,当用户位于对应的页面目录时，才显示此侧边栏
          */
         // sidebar: {"/": set_sidebar("docs/")},
-        sidebar: {
-            '/vitepress/': [
-                {
-                    text: 'vitepress',
-                    link: '/vitepress/vitepress使用',
-                    collapsed: false,
-                    /**
-                     * 侧边栏项的子项
-                     */
-                    items: [
-                        {text: 'vitepress使用', link: '/vitepress/vitepress使用'},
-                        {text: 'markdown语法扩展', link: '/vitepress/markdown语法扩展'},
-                        {text: 'frontmatter说明', link: '/vitepress/frontmatter说明'},
-                    ]
-                }
-            ],
-            '/markdown/': [
-                {
-                    text: 'markdown',
-                    items: [
-                        {text: 'markdown语法', link: '/markdown/markdown语法'},
-                    ]
-                },
-            ]
-        },
+        // sidebar: {
+        //     '/vitepress/': [
+        //         {
+        //             text: 'vitepress',
+        //             link: '/vitepress/vitepress使用',
+        //             collapsed: false,
+        //             /**
+        //              * 侧边栏项的子项
+        //              */
+        //             items: [
+        //                 {text: 'vitepress使用', link: '/vitepress/vitepress使用'},
+        //                 {text: 'markdown语法扩展', link: '/vitepress/markdown语法扩展'},
+        //                 {text: 'frontmatter说明', link: '/vitepress/frontmatter说明'},
+        //             ]
+        //         }
+        //     ],
+        //     '/markdown/': [
+        //         {
+        //             text: 'markdown',
+        //             items: [
+        //                 {text: 'markdown语法', link: '/markdown/markdown语法'},
+        //             ]
+        //         },
+        //     ]
+        // },
+
+
         /**
          *  详情页面导航
          *  默认true 在页面右侧渲染，false 可禁用 aside 容器，left在页面左侧渲染
@@ -182,7 +170,7 @@ export default defineConfig({
 <!--                </div>-->
               `,
             // 实际的版权文本
-            copyright: `Copyright © 2025 677. All Rights Reserved.`
+            copyright: `Copyright © 2025 677. All Rights Reserved. <UpdateTime />`
         },
 
         /**
@@ -202,8 +190,8 @@ export default defineConfig({
         lastUpdated: {
             text: '最后更新于: ',
             formatOptions: {
-                dateStyle: 'full',
-                timeStyle: 'medium'
+                dateStyle: 'short', //full
+                timeStyle: 'short' //medium
             }
         },
 
@@ -277,7 +265,7 @@ export default defineConfig({
          * 类型：string
          * 默认值：Menu
          */
-        // sidebarMenuLabel:""
+        sidebarMenuLabel: "菜单",
 
         /**
          * 是否在 markdown 中的外部链接旁显示外部链接图标。
@@ -286,4 +274,105 @@ export default defineConfig({
          */
         externalLinkIcon: true
     }
-})
+}
+
+// VitePress 配置
+export default defineConfig({
+    extends: vitePressOptions,
+
+    markdown: {
+        //行号显示
+        lineNumbers: true,
+
+        config: (md) => {
+            //时间线
+            md.use(timeline);
+            //Mermaid
+            md.use(MermaidMarkdown);
+            //标题下增加修改时间、字数、阅读时间
+            md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
+                let htmlResult = slf.renderToken(tokens, idx, options);
+                if (tokens[idx].tag === 'h1') htmlResult += `<ArticleMetadata />`;
+                return htmlResult;
+            }
+            // 代码组中添加图片
+            md.use((md) => {
+                const defaultRender = md.render
+                md.render = (...args) => {
+                    const [content, env] = args
+                    const currentLang = env?.localeIndex || 'root'
+                    const isHomePage = env?.path === '/' || env?.relativePath === 'index.md'  // 判断是否是首页
+
+                    if (isHomePage) {
+                        return defaultRender.apply(md, args) // 如果是首页，直接渲染内容
+                    }
+                    // 调用原始渲染
+                    let defaultContent = defaultRender.apply(md, args)
+                    // 替换内容
+                    if (currentLang === 'root') {
+                        defaultContent = defaultContent.replace(/提醒/g, '提醒')
+                            .replace(/建议/g, '建议')
+                            .replace(/重要/g, '重要')
+                            .replace(/警告/g, '警告')
+                            .replace(/注意/g, '注意')
+                    } else if (currentLang === 'ko') {
+                        // 韩文替换
+                        defaultContent = defaultContent.replace(/提醒/g, '알림')
+                            .replace(/建议/g, '팁')
+                            .replace(/重要/g, '중요')
+                            .replace(/警告/g, '경고')
+                            .replace(/注意/g, '주의')
+                    }
+                    // 返回渲染的内容
+                    return defaultContent
+                }
+
+                // 获取原始的 fence 渲染规则
+                const defaultFence = md.renderer.rules.fence?.bind(md.renderer.rules) ?? ((...args) => args[0][args[1]].content);
+
+                // 重写 fence 渲染规则
+                md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+                    const token = tokens[idx];
+                    const info = token.info.trim();
+
+                    // 判断是否为 md:img 类型的代码块
+                    if (info.includes('md:img')) {
+                        // 只渲染图片，不再渲染为代码块
+                        return `<div class="rendered-md">${md.render(token.content)}</div>`;
+                    }
+
+                    // 其他代码块按默认规则渲染（如 java, js 等）
+                    return defaultFence(tokens, idx, options, env, self);
+                };
+            })
+        },
+    },
+
+    vite: {
+        plugins: [
+            //侧边栏生成配置
+            Sidebar({
+                //侧边栏生成规则
+                // 当 resolveRule 为 filePath，则按照本地文件路径生成侧边栏
+                // 当 resolveRule 为 rewrites，则按照 rewrites 结果生成侧边栏
+                resolveRule: "filePath",
+                // resolveRule: "rewrites",
+
+                //排序设置
+                sort: true, // 开启 frontmatter.sidebarSort 功能，默认已经开启，无需设置
+                defaultSortNum: 9999, // 没有指定 frontmatter.sidebarSort 时的默认值，用于侧边栏排序
+                sortNumFromFileName: false, // 是否用文件名的前缀序号作为其侧边栏 Item 的排序序号。如果为 true，当文件名存在序号前缀，则使用序号前缀，否则使用 defaultSortNum
+
+                //是否折叠侧边栏
+                collapsed: false,
+            }),
+            MermaidPlugin()
+        ],
+        optimizeDeps: {
+            include: ['mermaid'],
+        },
+        ssr: {
+            noExternal: ['mermaid'],
+        },
+    },
+});

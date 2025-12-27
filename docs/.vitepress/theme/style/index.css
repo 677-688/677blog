@@ -1,0 +1,23 @@
+/* index.css */
+@import './var.css';
+/* 主页背景彩虹渐变 */
+@import './rainbow.css';
+/* 导航栏毛玻璃 */
+@import './blur.css';
+/* 隐藏横条 */
+@import './hidden.css';
+/* 代码块带标题 */
+@import './vp-code-title.css';
+/* 侧边栏样式美化 */
+@import './sidebarIcon.css';
+
+/* 图片缩放 */
+.medium-zoom-overlay {
+    z-index: 30;
+}
+
+.medium-zoom-image {
+    z-index: 9999 !important;/* 给的值是21，但是实测盖不住，直接999 */
+}
+
+

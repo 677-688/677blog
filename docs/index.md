@@ -6,21 +6,24 @@ layout: home
 hero:
     # `text` 上方的字符，带有品牌颜色
     # 预计简短，例如产品名称
-    name: "677 知识体系"
+    name: 677 的知识库
 
     # hero 部分的主要文字，
     # 被定义为 `h1` 标签
-    text: ""
+    text: 学习 · 实践 · 沉淀
 
     # `text` 下方的标语
-    tagline: 夯实基础 构建体系 全栈开发
+    tagline: 持续学习是成长的关键，不断记录和反思来提升自己
 
     # text 和 tagline 区域旁的图片
     # type ThemeableImage =
     #| string
-    #| { src: string; alt?: string }
-    #| { light: string; dark: string; alt?: string }
-    #image: { src：'../cat1.ico' },
+    #| { src: string alt?: string }
+    #| { light: string dark: string alt?: string }
+    image: {
+        light: ./icon/cat1.ico,
+        dark: ./icon/cat2.ico
+    }
 
     # 主页 hero 部分的操作按钮
     # theme:按钮的颜色主题，默认为 `brand`  'brand' | 'alt'
@@ -30,11 +33,11 @@ hero:
     # rel：链接的 rel 属性
     actions:
         -   theme: brand
-            text: Markdown Examples
-            link: /vitepress/vitepress使用
-        -   theme: alt
-            text: API Examples
-            link: /vitepress/vitepress使用
+            text: 软件设计理论
+            link: /软件设计理论/
+#        -   theme: alt
+#            text: API Examples
+#            link: /vitepress/vitepress使用
 
 # 在 Features 部分，可以在 Hero 部分之后列出任意数量的 Feature
 # icon：在每个 feature 框中显示图标
@@ -56,21 +59,36 @@ hero:
 # target：`link` 选项的链接 target 属性
 features:
     -   icon: {
-        light: ./cat1.ico,
-        dark: ./cat2.ico
+        light: ./icon/cat1.ico,
+        dark: ./icon/cat2.ico
     }
-        title: Another cool feature
-        details: Lorem ipsum...
-        link: /vitepress/vitepress使用
+        title: 学习
+        details: 持续学习是成长的关键，通过不断记录和反思来提升自己
+    #        link: /vitepress/vitepress使用
     -   icon: {
-        light: ./cat1.ico,
-        dark: ./cat2.ico
+        light: ./icon/cat1.ico,
+        dark: ./icon/cat2.ico
     }
-        title: Another cool feature
-        details: Lorem ipsum...
+        title: 实践
+        details: 通过动手实践来巩固理论知识，实战经验是最宝贵的财富
+    #        link: 
+    -   icon: {
+        light: ./icon/cat1.ico,
+        dark: ./icon/cat2.ico
+    }
+        title: 创新
+        details: 在学习和实践中不断创新，探索新的技术和方法
+    #        link: 
+    -   icon: {
+        light: ./icon/cat1.ico,
+        dark: ./icon/cat2.ico
+    }
+        title: 记录
+        details: 详细记录学习过程中的每一个步骤和心得，方便日后查阅和反思
         link: /vitepress/vitepress使用
 ---
 
+<!-- index.md -->
+<DataPanel />
 
------------------------------------
-
+<HomeUnderline />
