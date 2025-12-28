@@ -11,7 +11,7 @@ export const teekConfig = defineTeekConfig({
     viewTransition: {
         enabled: true, // 是否启用深浅色切换动画效果
         mode: "out-in", // 动画模式，out 始终从点击点往全屏扩散，out-in 第一次从点击点往全屏扩散，再次点击从全屏回到点击点
-        duration: 2000, // 动画持续时间，当 mode 为 out 时，默认为 300ms，mode 为 out-in 时，默认为 600ms
+        duration: 300, // 动画持续时间，当 mode 为 out 时，默认为 300ms，mode 为 out-in 时，默认为 600ms
         easing: "ease-in", // 缓动函数
     },
     themeSize: "default", // 站点尺寸，默认为 medium
