@@ -168,9 +168,13 @@ const vitePressOptions = {
         footer: {
             // 版权前显示的信息
             message: ` <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;">
-                            总访问量 <span id="busuanzi_value_site_pv">--</span> 次
-                            <img src="heart.gif" alt="heart" width="10" height="10" />
-                            访客数 <span id="busuanzi_value_site_uv">--</span> 人次 
+                            <span id="busuanzi_container_site_pv">
+                                总访问量 <span id="busuanzi_value_site_pv">--</span> 次
+                            </span>
+<!--                            <img src="heart.gif" alt="heart" width="10" height="10" />-->
+                             <span id="busuanzi_container_site_uv">
+                                访客数 <span id="busuanzi_value_site_uv">--</span> 人次 
+                            </span>
                         </div> 
                      `,
             // 实际的版权文本

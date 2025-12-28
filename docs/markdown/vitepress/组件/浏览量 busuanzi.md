@@ -34,7 +34,7 @@ export default {
 ### 使用
 
 本站总访问量 <span id="busuanzi_value_site_pv" /> 次 <br>
-本站访客数 <span id="busuanzi_value_site_uv" /> 人次
+本站访客数 <span id="busuanzi_value_site_uv" /> 人次 
 
 ### 修改样式
 
